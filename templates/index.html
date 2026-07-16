@@ -4,27 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Forecaster</title>
-    <!-- Using a lightweight CSS framework for basic styling -->
+    <!-- Bootstrap 5 CSS Framework -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { padding: 40px; background-color: #f8f9fa; }
         .card { padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .chart-container img { max-width: 100%; height: auto; margin-top: 15px; }
+        .chart-container img { max-width: 100%; height: auto; margin-top: 15px; border: 1px solid #ddd; border-radius: 4px; }
+        /* Makes the auto-generated pandas table look clean */
+        .table-responsive table { width: 100%; class: table table-striped table-hover; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 class="mb-4">Prophet Sales Forecaster</h1>
         
+        <!-- Error Alerts -->
         {% if error %}
-        <div class="alert alert-danger">{{ error }}</div>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ error }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         {% endif %}
 
+        <!-- Input Parameters Form -->
         <div class="card">
             <form method="POST" enctype="multipart/form-data">
                 <div class="row g-3">
                     <div class="col-md-12">
-                        <label class="form-label">Upload Dataset (CSV/Excel)</label>
+                        <label class="form-label font-weight-bold">Upload Dataset (CSV or Excel)</label>
                         <input type="file" class="form-control" name="file" accept=".csv, .xlsx, .xls" required>
                     </div>
                     <div class="col-md-4">
@@ -37,7 +44,7 @@
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Forecast Horizon (Days)</label>
-                        <input type="number" class="form-control" name="forecast_days" value="90" required>
+                        <input type="number" class="form-control" name="forecast_days" value="90" min="1" required>
                     </div>
                     <div class="col-md-12">
                         <button type="submit" class="btn btn-primary w-100 mt-3">Generate Forecast</button>
@@ -46,9 +53,10 @@
             </form>
         </div>
 
+        <!-- Render Forecast Outputs Conditionality -->
         {% if summary_table %}
         <div class="card">
-            <h3>Forecast Summary (End of Horizon)</h3>
+            <h3 class="mb-3">Forecast Summary (End of Horizon)</h3>
             <div class="table-responsive">
                 {{ summary_table | safe }}
             </div>
@@ -65,5 +73,8 @@
         </div>
         {% endif %}
     </div>
+    
+    <!-- Bootstrap JS Bundle for dismissible alerts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
