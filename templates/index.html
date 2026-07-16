@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Forecaster</title>
+    <!-- Using a lightweight CSS framework for basic styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding: 40px; background-color: #f8f9fa; }
+        .card { padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .chart-container img { max-width: 100%; height: auto; margin-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Prophet Sales Forecaster</h1>
+        
+        {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        <div class="card">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label class="form-label">Upload Dataset (CSV/Excel)</label>
+                        <input type="file" class="form-control" name="file" accept=".csv, .xlsx, .xls" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Date Column Name</label>
+                        <input type="text" class="form-control" name="date_col" value="Date" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Sales Column Name</label>
+                        <input type="text" class="form-control" name="sales_col" value="Sales" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Forecast Horizon (Days)</label>
+                        <input type="number" class="form-control" name="forecast_days" value="90" required>
+                    </div>
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Generate Forecast</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        {% if summary_table %}
+        <div class="card">
+            <h3>Forecast Summary (End of Horizon)</h3>
+            <div class="table-responsive">
+                {{ summary_table | safe }}
+            </div>
+        </div>
+
+        <div class="card chart-container">
+            <h3>Forecast Trend</h3>
+            <img src="data:image/png;base64,{{ plot1 }}" alt="Forecast Plot">
+        </div>
+
+        <div class="card chart-container">
+            <h3>Time Series Components</h3>
+            <img src="data:image/png;base64,{{ plot2 }}" alt="Components Plot">
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
